@@ -1,0 +1,49 @@
+% Standalone preview of the Module 4 frames.  Compile with pdflatex.
+% In the main deck, only \input{module4_frames} is needed.
+%
+% VIDEO NOTE: To embed the PINN training video, place
+%   pinn_fitting.mp4  (the uploaded file)  next to this .tex file and
+%   uncomment the \movie{}{} frame below before compiling with pdflatex.
+%   Acrobat Reader / Foxit are required to play embedded video.
+%
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage{graphicx,booktabs,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{multimedia}   % for \movie{}{} video embed
+
+% ── Beamer theme (identical to Module 1 and Module 5) ───────────────────
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\definecolor{deckInk}{HTML}{1F2933}
+\definecolor{deckAccent}{HTML}{7B2D8E}
+\setbeamercolor{frametitle}{fg=deckInk}
+\setbeamercolor{framesubtitle}{fg=deckInk!60}
+\setbeamercolor{structure}{fg=deckAccent}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{framesubtitle}{size=\scriptsize}
+\setbeamertemplate{frametitle}{%
+  \vspace*{4pt}\insertframetitle\par
+  {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle\par}
+  \vskip3pt{\color{deckAccent}\hrule height 0.6pt}\vskip-4pt}
+\setbeamertemplate{footline}{\hfill{\scriptsize\color{deckInk!50}\insertframenumber}\hspace*{10pt}\vspace*{6pt}}
+\setbeamersize{text margin left=18pt,text margin right=18pt}
+% ────────────────────────────────────────────────────────────────────────
+
+\begin{document}
+
+% ── Module 4 content frames ─────────────────────────────────────────────
+\input{module4_frames}
+
+% ── Optional video frame (uncomment if pinn_fitting.mp4 is present) ─────
+%
+% \begin{frame}{PINN fitting in action}
+% \framesubtitle{Module 4 \textbullet\ Adam + L-BFGS convergence on the E3 inverse problem}
+% \centering
+% \movie[width=0.85\textwidth,height=0.60\textheight,poster,showcontrols,autostart]{%
+%   \includegraphics[width=0.85\textwidth,height=0.60\textheight,keepaspectratio]%
+%   {figs/fig_e2_forward_pinn.png}%
+% }{pinn_fitting.mp4}
+% \end{frame}
+
+\end{document}
