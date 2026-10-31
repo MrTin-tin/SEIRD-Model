@@ -122,16 +122,12 @@
   <div>
     <div class='header'>
       <div class='title'>Synthetic experiments: E2 forward, E3 inverse &beta;(t), E4 hidden states</div>
+      <div class='subtitle'>Module 4 &bull; no real data; ground truth is known; PINN is tested against DOP853</div>
     </div>
     <div class='content'>
-      <div class='col col-48'>
-        <h4>E2: Forward solution verification</h4>
-        <ul>
-          <li>Trained solely on physics loss <i>L<sub>ode</sub></i> with <b>no data</b> (<i>w<sub>data</sub> = 0</i>)</li>
-          <li>Pointwise errors against DOP853 <b>&lt; 2.0&times;10<sup>&minus;3</sup></b> across all states</li>
-          <li>Total mass conservation error: <b>2&times;10<sup>&minus;16</sup></b> (machine zero)</li>
-        </ul>
-        <h4 style='margin-top:8px;'>E3 &amp; E4: Quantitative recovery under noise</h4>
+      <div class='col col-50'>
+        <img src='figs/fig_e2_forward_pinn.png' style='height:140px;'/>
+        <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E2: forward PINN (markers) vs. DOP853 (lines) and pointwise error</div>
         <table>
           <thead>
             <tr>
@@ -142,21 +138,22 @@
           </thead>
           <tbody>
             <tr><td>&beta;(t) relative L<sub>2</sub></td><td>11.0% &plusmn; 0.7%</td><td>11.6% &plusmn; 0.6%</td></tr>
-            <tr><td>&beta;(t) RMSE (&gt;5d from jump)</td><td>0.022 &plusmn; 0.005</td><td>0.025 &plusmn; 0.005</td></tr>
             <tr><td>&mu; relative error</td><td>4.6% &plusmn; 0.3%</td><td>5.4% &plusmn; 1.0%</td></tr>
             <tr><td>Hidden s(t)</td><td>0.36% &plusmn; 0.03%</td><td>0.46% &plusmn; 0.09%</td></tr>
             <tr><td>Hidden e(t)</td><td>5.8% &plusmn; 0.6%</td><td>6.4% &plusmn; 0.7%</td></tr>
             <tr class='bottom-border'><td>Hidden i(t)</td><td>5.8% &plusmn; 0.4%</td><td>6.5% &plusmn; 0.8%</td></tr>
           </tbody>
         </table>
-        <div style='font-size:9.5px; color:#5F6B7A; margin-top:2px;'>Results: mean &plusmn; SD over 5 seeds; step reduction &beta;: 0.55 &rarr; 0.25 at Day 30.</div>
+        <div style='font-size:9px; color:#5F6B7A;'>E3/E4: 5 seeds; step reduction &beta;: 0.55 &rarr; 0.25 at Day 30</div>
       </div>
-      <div class='col col-49' style='display:flex; flex-direction:column; justify-content:space-around;'>
+      <div class='col col-48' style='display:flex; flex-direction:column; justify-content:space-between;'>
         <div>
-          <img src='figs/fig_e3_inverse_beta.png' style='height:140px;'/>
+          <img src='figs/fig_e3_inverse_beta.png' style='height:120px;'/>
+          <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E3: Recovered &beta;(t) (shaded band = seed range at 5% noise)</div>
         </div>
         <div>
-          <img src='figs/fig_e4_hidden_states.png' style='height:140px;'/>
+          <img src='figs/fig_e4_hidden_states.png' style='height:120px;'/>
+          <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E4: Unobserved s(t), e(t), i(t) reconstructed from cases/deaths</div>
         </div>
       </div>
     </div>

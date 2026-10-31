@@ -20,7 +20,7 @@
     width: 960px;
     height: 540px; /* 16:9 ratio */
     background: #fff;
-    padding: 22px 32px 18px 32px;
+    padding: 20px 30px;
     position: relative;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     display: flex;
@@ -30,40 +30,43 @@
   }
   .header {
     border-bottom: 1.5px solid #7B2D8E;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
   }
   .title {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 700;
     color: #1F2933;
     line-height: 1.2;
   }
+  .subtitle {
+    font-size: 11px;
+    color: #5F6B7A;
+    margin-top: 2px;
+  }
   .content {
     flex: 1;
     display: flex;
-    gap: 22px;
-    font-size: 12px;
+    gap: 20px;
+    font-size: 11.5px;
     line-height: 1.35;
   }
   .col {
     flex: 1;
   }
   .col-50 { flex: 0 0 50%; }
-  .col-47 { flex: 0 0 47%; }
   .col-48 { flex: 0 0 48%; }
-  .col-49 { flex: 0 0 49%; }
   .col-52 { flex: 0 0 52%; }
-  .col-45 { flex: 0 0 45%; }
+  .col-46 { flex: 0 0 46%; }
   h4 {
     color: #7B2D8E;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
     margin-top: 4px;
     margin-bottom: 2px;
   }
   ul, ol {
-    padding-left: 16px;
+    padding-left: 15px;
     margin-bottom: 4px;
   }
   li {
@@ -73,9 +76,9 @@
     background: #F3EDF6;
     border: 1px solid #C9B6D3;
     border-radius: 3px;
-    padding: 6px 10px;
+    padding: 5px 8px;
     font-size: 10.5px;
-    line-height: 1.35;
+    line-height: 1.3;
     color: #1F2933;
     margin-top: 4px;
   }
@@ -85,6 +88,10 @@
     font-size: 10px;
     color: #8898AA;
     padding-top: 2px;
+  }
+  .math {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
   }
   .formula-box {
     background: #FAF8FB;
@@ -111,6 +118,14 @@
   tr.bottom-border td {
     border-bottom: 1.2px solid #1F2933;
   }
+  .badge {
+    background: #7B2D8E;
+    color: #fff;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 600;
+  }
   img {
     max-width: 100%;
     display: block;
@@ -120,12 +135,12 @@
 </style>
 </head>
 <body>
-
 <!-- Slide 1 -->
 <div class='slide-container' id='slide1'>
   <div>
     <div class='header'>
       <div class='title'>PINN design: architecture and inductive biases</div>
+      <div class='subtitle'>Module 4 &bull; two networks share one physics loss &bull; six design choices enforce SEIRD structure exactly</div>
     </div>
     <div class='content'>
       <div class='col col-50'>
@@ -151,7 +166,7 @@
           </li>
         </ul>
       </div>
-      <div class='col col-47'>
+      <div class='col col-48'>
         <h4>Six inductive biases</h4>
         <ol>
           <li><b>Hard ICs:</b> Exponential factor <i>e<sub>0</sub>e<sup>&tau; g<sub>1</sub></sup></i> guarantees <i>e(0)=e<sub>0</sub></i> exactly; &tau; factor enforces zero IC gradient at &tau;=0.</li>
@@ -177,6 +192,7 @@
   <div>
     <div class='header'>
       <div class='title'>Loss function and training protocol</div>
+      <div class='subtitle'>Module 4 &bull; four terms; Adam brings it close, L-BFGS closes the gap</div>
     </div>
     <div class='content'>
       <div class='col col-52'>
@@ -196,7 +212,7 @@
         <h4>Why relative ODE residuals?</h4>
         <p style='font-size:10.5px;'>An outbreak grows exponentially across orders of magnitude. Under standard absolute residuals, early-stage errors contribute negligible loss. The E6 ablation reveals absolute residuals yield <b>75%&ndash;128% error</b> vs. <b>&lt; 0.2%</b> under relative scaling.</p>
       </div>
-      <div class='col col-45'>
+      <div class='col col-46'>
         <h4>Two-stage optimiser</h4>
         <ul>
           <li><b>Stage 1 &mdash; Adam:</b> LR 2&times;10<sup>&minus;3</sup> with cosine annealing, 2000 iterations. Resamples random collocation points per step to escape local minima.</li>
@@ -206,8 +222,9 @@
         </ul>
         <h4>Forecasting protocol</h4>
         <p style='font-size:10.5px;'>Hold &beta; at its empirical 14-day trailing mean; freeze inferred &mu;; propagate SEIRD forward via DOP853 numerical solver.</p>
-        <h4>Ablation insights (E6)</h4>
-        <p style='font-size:10.5px;'>Adam-only: <i>e(t)</i> error jumps to <b>96%</b>. Physics weight <i>w<sub>ode</sub> = 10</i>: errors triple. Fourier features reduce &beta; RMSE by <b>28%</b>.</p>
+        <div style='background:#FFF9E6; border-left:2px solid #E6A23C; padding:3px 6px; font-size:10px; margin-top:4px;'>
+          <b>Ablation insights (E6):</b> Without L-BFGS, latent state error jumps to <b>96%</b>. Fourier features cut &beta; RMSE by <b>28%</b>.
+        </div>
       </div>
     </div>
   </div>
@@ -224,16 +241,12 @@
   <div>
     <div class='header'>
       <div class='title'>Synthetic experiments: E2 forward, E3 inverse &beta;(t), E4 hidden states</div>
+      <div class='subtitle'>Module 4 &bull; no real data; ground truth is known; PINN is tested against DOP853</div>
     </div>
     <div class='content'>
-      <div class='col col-48'>
-        <h4>E2: Forward solution verification</h4>
-        <ul>
-          <li>Trained solely on physics loss <i>L<sub>ode</sub></i> with <b>no data</b> (<i>w<sub>data</sub> = 0</i>)</li>
-          <li>Pointwise errors against DOP853 <b>&lt; 2.0&times;10<sup>&minus;3</sup></b> across all states</li>
-          <li>Total mass conservation error: <b>2&times;10<sup>&minus;16</sup></b> (machine zero)</li>
-        </ul>
-        <h4 style='margin-top:8px;'>E3 &amp; E4: Quantitative recovery under noise</h4>
+      <div class='col col-50'>
+        <img src='figs/fig_e2_forward_pinn.png' style='height:140px;'/>
+        <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E2: forward PINN (markers) vs. DOP853 (lines) and pointwise error</div>
         <table>
           <thead>
             <tr>
@@ -244,21 +257,22 @@
           </thead>
           <tbody>
             <tr><td>&beta;(t) relative L<sub>2</sub></td><td>11.0% &plusmn; 0.7%</td><td>11.6% &plusmn; 0.6%</td></tr>
-            <tr><td>&beta;(t) RMSE (&gt;5d from jump)</td><td>0.022 &plusmn; 0.005</td><td>0.025 &plusmn; 0.005</td></tr>
             <tr><td>&mu; relative error</td><td>4.6% &plusmn; 0.3%</td><td>5.4% &plusmn; 1.0%</td></tr>
             <tr><td>Hidden s(t)</td><td>0.36% &plusmn; 0.03%</td><td>0.46% &plusmn; 0.09%</td></tr>
             <tr><td>Hidden e(t)</td><td>5.8% &plusmn; 0.6%</td><td>6.4% &plusmn; 0.7%</td></tr>
             <tr class='bottom-border'><td>Hidden i(t)</td><td>5.8% &plusmn; 0.4%</td><td>6.5% &plusmn; 0.8%</td></tr>
           </tbody>
         </table>
-        <div style='font-size:9.5px; color:#5F6B7A; margin-top:2px;'>Results: mean &plusmn; SD over 5 seeds; step reduction &beta;: 0.55 &rarr; 0.25 at Day 30.</div>
+        <div style='font-size:9px; color:#5F6B7A;'>E3/E4: 5 seeds; step reduction &beta;: 0.55 &rarr; 0.25 at Day 30</div>
       </div>
-      <div class='col col-49' style='display:flex; flex-direction:column; justify-content:space-around;'>
+      <div class='col col-48' style='display:flex; flex-direction:column; justify-content:space-between;'>
         <div>
-          <img src='figs/fig_e3_inverse_beta.png' style='height:140px;'/>
+          <img src='figs/fig_e3_inverse_beta.png' style='height:120px;'/>
+          <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E3: Recovered &beta;(t) (shaded band = seed range at 5% noise)</div>
         </div>
         <div>
-          <img src='figs/fig_e4_hidden_states.png' style='height:140px;'/>
+          <img src='figs/fig_e4_hidden_states.png' style='height:120px;'/>
+          <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E4: Unobserved s(t), e(t), i(t) reconstructed from cases/deaths</div>
         </div>
       </div>
     </div>
