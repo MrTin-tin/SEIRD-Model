@@ -122,7 +122,6 @@
   <div>
     <div class='header'>
       <div class='title'>Loss function and training protocol</div>
-      <div class='subtitle'>Module 4 &bull; four terms; Adam brings it close, L-BFGS closes the gap</div>
     </div>
     <div class='content'>
       <div class='col col-52'>
@@ -142,7 +141,7 @@
         <h4>Why relative ODE residuals?</h4>
         <p style='font-size:10.5px;'>An outbreak grows exponentially across orders of magnitude. Under standard absolute residuals, early-stage errors contribute negligible loss. The E6 ablation reveals absolute residuals yield <b>75%&ndash;128% error</b> vs. <b>&lt; 0.2%</b> under relative scaling.</p>
       </div>
-      <div class='col col-46'>
+      <div class='col col-45'>
         <h4>Two-stage optimiser</h4>
         <ul>
           <li><b>Stage 1 &mdash; Adam:</b> LR 2&times;10<sup>&minus;3</sup> with cosine annealing, 2000 iterations. Resamples random collocation points per step to escape local minima.</li>
@@ -152,9 +151,8 @@
         </ul>
         <h4>Forecasting protocol</h4>
         <p style='font-size:10.5px;'>Hold &beta; at its empirical 14-day trailing mean; freeze inferred &mu;; propagate SEIRD forward via DOP853 numerical solver.</p>
-        <div style='background:#FFF9E6; border-left:2px solid #E6A23C; padding:3px 6px; font-size:10px; margin-top:4px;'>
-          <b>Ablation insights (E6):</b> Without L-BFGS, latent state error jumps to <b>96%</b>. Fourier features cut &beta; RMSE by <b>28%</b>.
-        </div>
+        <h4>Ablation insights (E6)</h4>
+        <p style='font-size:10.5px;'>Adam-only: <i>e(t)</i> error jumps to <b>96%</b>. Physics weight <i>w<sub>ode</sub> = 10</i>: errors triple. Fourier features reduce &beta; RMSE by <b>28%</b>.</p>
       </div>
     </div>
   </div>

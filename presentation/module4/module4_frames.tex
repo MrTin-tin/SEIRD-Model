@@ -25,7 +25,6 @@
 
 % -----------------------------------------------------------------------
 \begin{frame}{PINN design: architecture and inductive biases}
-\framesubtitle{Module 4 \textbullet\ two networks share one physics loss \textbullet\ six design choices enforce SEIRD structure exactly}
 \vspace{-2pt}
 \begin{columns}[T,onlytextwidth]
 \column{0.50\textwidth}
@@ -65,7 +64,6 @@
 
 % -----------------------------------------------------------------------
 \begin{frame}{Loss function and training protocol}
-\framesubtitle{Module 4 \textbullet\ four terms; Adam brings it close, L-BFGS closes the gap}
 \vspace{-2pt}
 \begin{columns}[T,onlytextwidth]
 \column{0.52\textwidth}
@@ -100,7 +98,7 @@
   \textbf{\color{mvPINN}Forecasting}\\
   {\small Hold $\beta$ at its mean over the last 14 training days; keep learned $\mu$; integrate forward with DOP853. Forecast is the median over seeds. The assumption that $\beta$ stays constant limits predictive horizon.}
   \vspace{4pt}
-  \textbf{\color{mvMuted}E6 ablation headline}\\
+  \textbf{\color{mvPINN}Ablation insights (E6)}\\
   {\small Adam-only: $e(t)$ error $96\%$; $w_{\text{ode}}=10$: errors triple; no Fourier features: $\beta$ RMSE $+38\%$.}
 \end{columns}
 \mvTakeaway{\textbf{Key design decision:} the L-BFGS stage is non-negotiable. Without it the inverse problem ($\beta(t)$ recovery) barely converges.}
@@ -108,32 +106,37 @@
 
 % -----------------------------------------------------------------------
 \begin{frame}{Synthetic experiments: E2 forward, E3 inverse $\beta(t)$, E4 hidden states}
-\framesubtitle{Module 4 \textbullet\ no real data; ground truth is known; PINN is tested against DOP853}
-\vspace{-4pt}
+\vspace{-2pt}
 \begin{columns}[T,onlytextwidth]
-\column{0.50\textwidth}
-  \centering
-  \includegraphics[height=0.28\textheight]{figs/fig_e2_forward_pinn.png}\\
-  {\scriptsize\color{mvMuted} E2: forward PINN (markers) vs.\ DOP853 (lines) and pointwise error}\\[4pt]
-  \scriptsize\setlength{\tabcolsep}{3pt}
+\column{0.48\textwidth}
+  \footnotesize\raggedright
+  \textbf{\color{mvPINN}E2: Forward solution verification}
+  \begin{itemize}\setlength{\itemsep}{1pt}
+    \item Trained solely on physics loss $\mathcal{L}_{\text{ode}}$ with \textbf{no data} ($w_{\text{data}} = 0$)
+    \item Pointwise errors against DOP853 $< 2.0\times 10^{-3}$ across all states
+    \item Total mass conservation: error is $2\times 10^{-16}$ (machine zero)
+  \end{itemize}
+  \vspace{4pt}
+  \textbf{\color{mvPINN}E3 \& E4: Quantitative recovery under noise}
+  \vspace{2pt}
+  \scriptsize\setlength{\tabcolsep}{4pt}
   \begin{tabular}{@{}lcc@{}}
     \toprule
     Quantity & 1\% noise & 5\% noise \\
     \midrule
     $\beta(t)$ rel.\ $L_2$ & $11.0\%\pm0.7\%$ & $11.6\%\pm0.6\%$ \\
+    $\beta(t)$ RMSE ($>5$d from jump) & $0.022\pm0.005$ & $0.025\pm0.005$ \\
     $\mu$ rel.\ error       & $4.6\%\pm0.3\%$  & $5.4\%\pm1.0\%$  \\
     hidden $s(t)$           & $0.36\%\pm0.03\%$ & $0.46\%\pm0.09\%$ \\
     hidden $e(t)$           & $5.8\%\pm0.6\%$   & $6.4\%\pm0.7\%$  \\
     hidden $i(t)$           & $5.8\%\pm0.4\%$   & $6.5\%\pm0.8\%$  \\
     \bottomrule
-  \end{tabular}\\[1pt]
-  {\tiny\color{mvMuted} E3/E4: mean $\pm$ SD over 5 seeds; $\beta$ drops 0.55$\to$0.25 at day 30}
-\column{0.48\textwidth}
+  \end{tabular}\\[3pt]
+  {\scriptsize Results: mean $\pm$ SD over 5 seeds; step reduction $\beta: 0.55\to 0.25$ at day 30.}
+\column{0.49\textwidth}
   \centering
-  \includegraphics[height=0.28\textheight]{figs/fig_e3_inverse_beta.png}\\
-  {\scriptsize\color{mvMuted} E3: recovered $\beta(t)$ (band = seed range, 5\% noise)}\\[2pt]
-  \includegraphics[height=0.28\textheight]{figs/fig_e4_hidden_states.png}\\
-  {\scriptsize\color{mvMuted} E4: reconstructed $s(t)$, $e(t)$, $i(t)$ from cases and deaths only}
+  \includegraphics[height=0.33\textheight]{figs/fig_e3_inverse_beta.png}\\[2pt]
+  \includegraphics[height=0.33\textheight]{figs/fig_e4_hidden_states.png}
 \end{columns}
 \vspace{1pt}
 \mvTakeaway{\textbf{E2:} worst compartment $< 2\times10^{-3}$; conservation $2\times10^{-16}$ (machine zero).
