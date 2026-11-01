@@ -1,0 +1,24 @@
+% Standalone preview of the Module 2 frames. Compile with pdflatex.
+% In the main deck, only \input{module2_frames} is needed.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage{graphicx,booktabs,amssymb}
+
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\definecolor{deckInk}{HTML}{1F2933}
+\definecolor{deckAccent}{HTML}{7B2D8E}
+\setbeamercolor{frametitle}{fg=deckInk}
+\setbeamercolor{framesubtitle}{fg=deckInk!60}
+\setbeamercolor{structure}{fg=deckAccent}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{framesubtitle}{size=\scriptsize}
+\setbeamertemplate{frametitle}{%
+  \vspace*{4pt}\insertframetitle\par
+  {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle\par}
+  \vskip3pt{\color{deckAccent}\hrule height 0.6pt}\vskip-4pt}
+\setbeamertemplate{footline}{\hfill{\scriptsize\color{deckInk!50}\insertframenumber}\hspace*{10pt}\vspace*{6pt}}
+\setbeamersize{text margin left=18pt,text margin right=18pt}
+
+\begin{document}
+\input{module2_frames}
+\end{document}
