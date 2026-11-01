@@ -1,0 +1,10 @@
+% Standalone wrapper: compiles module3_frames.tex on its own.
+% Build:  pdflatex module3_standalone.tex   (run from this folder)
+% Needs figs/fig_e1_convergence.png next to this file.
+\documentclass[aspectratio=169]{beamer}
+\usetheme{default}
+\usepackage{graphicx,booktabs,amssymb}
+\graphicspath{{./}}
+\begin{document}
+\input{module3_frames.tex}
+\end{document}
