@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 960px;
+    height: 540px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: 'Crimson Pro', 'Latin Modern Roman', 'Times New Roman', serif;
+    color: #1F2933;
+    -webkit-font-smoothing: antialiased;
+  }
+  .slide-container {
+    width: 960px;
+    height: 540px;
+    background: #fff;
+    padding: 22px 32px 18px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header {
+    border-bottom: 1.5px solid #7B2D8E;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1F2933;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #5F6B7A;
+    margin-top: 2px;
+  }
+  .content {
+    flex: 1;
+    display: flex;
+    gap: 22px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .col { flex: 1; }
+  .col-50 { flex: 0 0 50%; }
+  .col-48 { flex: 0 0 48%; }
+  .col-52 { flex: 0 0 52%; }
+  .col-46 { flex: 0 0 46%; }
+  h4 {
+    color: #7B2D8E;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  ul, ol {
+    padding-left: 16px;
+    margin-bottom: 4px;
+  }
+  li { margin-bottom: 2px; }
+  .takeaway {
+    background: #F3EDF6;
+    border: 1px solid #C9B6D3;
+    border-radius: 3px;
+    padding: 6px 10px;
+    font-size: 10.5px;
+    line-height: 1.35;
+    color: #1F2933;
+    margin-top: 4px;
+  }
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 10px;
+    color: #8898AA;
+    padding-top: 2px;
+  }
+  .formula-box {
+    background: #FAF8FB;
+    border-left: 2px solid #7B2D8E;
+    padding: 3px 6px;
+    margin: 3px 0;
+    font-size: 11px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+    margin: 4px 0;
+  }
+  th, td {
+    padding: 2.5px 4px;
+    text-align: left;
+  }
+  th {
+    border-top: 1.2px solid #1F2933;
+    border-bottom: 1px solid #1F2933;
+    font-weight: 600;
+  }
+  tr.bottom-border td {
+    border-bottom: 1.2px solid #1F2933;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+<div class='slide-container' id='slide2'>
+  <div>
+    <div class='header'>
+      <div class='title'>Loss function and training protocol</div>
+      <div class='subtitle'>Module 4 &bull; four terms; Adam brings it close, L-BFGS closes the gap</div>
+    </div>
+    <div class='content'>
+      <div class='col col-52'>
+        <h4>Total loss formulation</h4>
+        <div class='formula-box' style='text-align:center;'>
+          <b>L = (L<sub>C</sub> + L<sub>D</sub>) + L<sub>ode</sub> + w<sub>sm</sub> L<sub>smooth</sub></b>
+        </div>
+        <ul style='font-size:10.5px;'>
+          <li><b>L<sub>C</sub>, L<sub>D</sub>:</b> Mean squared error evaluated exclusively at real report dates (no interpolation artifacts).</li>
+          <li><b>L<sub>ode</sub>:</b> Autograd relative ODE residuals over <i>N<sub>f</sub> = 200</i> collocation points:
+            <div style='font-size:9.5px; background:#fff; border:1px solid #ddd; padding:2px 4px; margin:2px 0;'>
+              &Sigma; [(e' &minus; Tf<sub>e</sub>)/e]<sup>2</sup> + [(i' &minus; Tf<sub>i</sub>)/i]<sup>2</sup> + [(c' &minus; Tf<sub>c</sub>)/c]<sup>2</sup> + [(d' &minus; Tf<sub>d</sub>)/d]<sup>2</sup>
+            </div>
+          </li>
+          <li><b>L<sub>smooth</sub>:</b> Mean squared derivative &Sigma; (d&beta;/d&tau;)<sup>2</sup>.</li>
+        </ul>
+        <h4>Why relative ODE residuals?</h4>
+        <p style='font-size:10.5px;'>An outbreak grows exponentially across orders of magnitude. Under standard absolute residuals, early-stage errors contribute negligible loss. The E6 ablation reveals absolute residuals yield <b>75%&ndash;128% error</b> vs. <b>&lt; 0.2%</b> under relative scaling.</p>
+      </div>
+      <div class='col col-46'>
+        <h4>Two-stage optimiser</h4>
+        <ul>
+          <li><b>Stage 1 &mdash; Adam:</b> LR 2&times;10<sup>&minus;3</sup> with cosine annealing, 2000 iterations. Resamples random collocation points per step to escape local minima.</li>
+          <li><b>Stage 2 &mdash; L-BFGS:</b> Strong-Wolfe line search (2500&ndash;6000 iters) on a fixed linspace grid for quadratic convergence.</li>
+          <li><b>Float64 precision:</b> Strict double precision prevents rounding errors during higher-order autograd differentiation.</li>
+          <li><b>Ensemble:</b> 5 random seeds; median trajectory acts as robust point forecast.</li>
+        </ul>
+        <h4>Forecasting protocol</h4>
+        <p style='font-size:10.5px;'>Hold &beta; at its empirical 14-day trailing mean; freeze inferred &mu;; propagate SEIRD forward via DOP853 numerical solver.</p>
+        <div style='background:#FFF9E6; border-left:2px solid #E6A23C; padding:3px 6px; font-size:10px; margin-top:4px;'>
+          <b>Ablation insights (E6):</b> Without L-BFGS, latent state error jumps to <b>96%</b>. Fourier features cut &beta; RMSE by <b>28%</b>.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class='takeaway'>
+      <b>Key design decision:</b> The L-BFGS second-order refinement is indispensable. Adam alone establishes coarse trends, but fails to resolve stiff ODE phase trajectories.
+    </div>
+    <div class='footer'>Module 4 &bull; Slide 2</div>
+  </div>
+</div>
+</body>
+</html>

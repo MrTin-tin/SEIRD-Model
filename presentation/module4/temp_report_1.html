@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 794px;
+    height: 1123px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: 'Crimson Pro', 'Times New Roman', serif;
+    color: #111;
+    font-size: 13.5px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 794px;
+    height: 1123px;
+    background: #fff;
+    padding: 60px 65px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .page-num {
+    text-align: center;
+    font-size: 11px;
+    color: #555;
+  }
+  h1.title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13.5px;
+    color: #444;
+    margin-bottom: 8px;
+  }
+  .author {
+    text-align: center;
+    font-size: 12.5px;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 22px;
+  }
+  h2.section {
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    border-bottom: 0.5px solid #ccc;
+    padding-bottom: 2px;
+  }
+  h3.subsection {
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+  p {
+    text-align: justify;
+    margin-bottom: 8px;
+    text-indent: 1.5em;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  .formula {
+    text-align: center;
+    margin: 8px 0;
+    font-style: italic;
+  }
+  ol, ul {
+    padding-left: 28px;
+    margin-bottom: 8px;
+  }
+  li {
+    margin-bottom: 4px;
+    text-align: justify;
+  }
+  .remark {
+    background: #fbfbfb;
+    border-left: 3px solid #7B2D8E;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 12.5px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 12px 0 6px 0;
+  }
+  th, td {
+    padding: 4px 6px;
+    text-align: left;
+  }
+  th {
+    border-top: 1.5px solid #111;
+    border-bottom: 1px solid #111;
+    font-weight: 600;
+  }
+  tr.bottom-border td {
+    border-bottom: 1.5px solid #111;
+  }
+  .caption {
+    font-size: 11.5px;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  .cite {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    padding-left: 18px;
+    text-indent: -18px;
+  }
+</style>
+</head>
+<body>
+<div class="page" id="report_page_1">
+  <div>
+    <h1 class="title">Module 4: Physics-Informed Neural Networks for SEIRD Epidemiology</h1>
+    <div class="subtitle">Mathematical Modelling Group Project &mdash; Sierra Leone Ebola 2014&ndash;15</div>
+    <div class="author">Member 4 &bull; November 2026</div>
+
+    <h2 class="section">1. Introduction and Motivation</h2>
+    <p class="no-indent">Surveillance systems for Ebola report two cumulative quantities at irregular dates: confirmed cases <i>C(t)</i> and confirmed deaths <i>D(t)</i>. Every other epidemiologically relevant quantity&mdash;the susceptible fraction <i>S</i>, the incubating population <i>E</i>, the currently infectious <i>I</i>, and most critically the time-varying transmission rate &beta;(<i>t</i>)&mdash;is latent. Classical approaches handle this latency by assuming a parametric shape for &beta;(<i>t</i>) in advance (a step function, an exponential decay, or piecewise-constant segments). Each assumption has a qualitative cost: a step can never anticipate a second wave; an exponential can only decrease monotonically.</p>
+    <p>Physics-informed neural networks (PINNs) offer a fundamentally different strategy. Two small neural networks jointly represent the state trajectories and &beta;(<i>t</i>) continuously, and are trained to minimise a composite loss function combining fidelity to empirical observations with a residual of the SEIRD ordinary differential equations evaluated via automatic differentiation. No predetermined functional form for &beta;(<i>t</i>) is imposed. The ODE constraint propagates observational signals from cases and deaths into the unmeasured compartments: by enforcing consistency with epidemiological dynamics, the network is compelled to reconstruct latent states <i>E</i> and <i>I</i> faithfully.</p>
+
+    <h2 class="section">2. Architecture and Inductive Biases</h2>
+    <h3 class="subsection">2.1 Observable Re-parameterisation</h3>
+    <p class="no-indent">Let <i>C(t) = I(t) + R(t) + D(t)</i> denote the cumulative symptomatic incidence. Differentiating yields <i>dC/dt = &sigma; E</i>. The standard SEIRD equations can therefore be rewritten using <i>(E, I, C, D)</i>:</p>
+    <div class="formula">
+      dE/dt = &beta;(t)(S/N)I &minus; &sigma;E, &emsp; dI/dt = &sigma;E &minus; (&gamma; + &mu;)I, &emsp; dC/dt = &sigma;E, &emsp; dD/dt = &mu;I
+    </div>
+    <p class="no-indent">with algebraic recoveries <i>R = C &minus; I &minus; D</i> and <i>S = N &minus; E &minus; C</i>. Consequently, the mass conservation identity <i>S + E + I + R + D = N</i> holds identically across all candidate network outputs, converting a difficult manifold constraint into an architectural invariant.</p>
+
+    <h3 class="subsection">2.2 Dual-Network Architecture</h3>
+    <p class="no-indent">The framework deploys two decoupled feed-forward networks:</p>
+    <ul>
+      <li><b>State network</b> <i>g<sub>&theta;</sub>(&tau;)</i>: 3 hidden layers of 48 tanh units with 4 outputs parameterising normalised time &tau; &isin; [0, 1]:
+        <div class="formula" style="font-size:12.5px;">
+          e = e<sub>0</sub> e<sup>&tau; g<sub>1</sub></sup>, &emsp; i = i<sub>0</sub> e<sup>&tau; g<sub>2</sub></sup>, &emsp; c = c<sub>0</sub> e<sup>&tau; g<sub>3</sub></sup>, &emsp; d = d<sub>0</sub> + &tau; g<sub>4</sub>
+        </div>
+      </li>
+      <li><b>Transmission network</b> <i>h<sub>&phi;</sub>(&tau;)</i>: 3 hidden layers of 32 tanh units with &beta;(&tau;) = Softplus(<i>h<sub>&phi;</sub>(&tau;) + b</i>) &gt; 0.</li>
+    </ul>
+
+    <h3 class="subsection">2.3 Inductive Biases</h3>
+    <p class="no-indent">Six foundational inductive biases ensure physical validity prior to parameter optimisation: (1) <i>Hard initial conditions</i> via exponential factors ensure zero gradient error at &tau;=0; (2) <i>Strict positivity</i> eliminates biologically impossible negative populations; (3) <i>CFR parameterisation</i> &mu; = &gamma; CFR / (1 &minus; CFR) with CFR &isin; (0.2, 0.8) blocks the degenerate &mu; &rarr; 0 branch; (4) <i>Fourier feature embeddings</i> resolve spectral bias; (5) <i>Relative ODE residuals</i> prevent early-stage dynamic attenuation; (6) <i>Smoothness regularisation</i> stabilises derivative ill-conditioning.</p>
+  </div>
+  <div class="page-num">1</div>
+</div>
+</body>
+</html>

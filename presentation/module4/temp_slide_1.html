@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 960px;
+    height: 540px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: 'Crimson Pro', 'Latin Modern Roman', 'Times New Roman', serif;
+    color: #1F2933;
+    -webkit-font-smoothing: antialiased;
+  }
+  .slide-container {
+    width: 960px;
+    height: 540px;
+    background: #fff;
+    padding: 22px 32px 18px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header {
+    border-bottom: 1.5px solid #7B2D8E;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1F2933;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #5F6B7A;
+    margin-top: 2px;
+  }
+  .content {
+    flex: 1;
+    display: flex;
+    gap: 22px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .col { flex: 1; }
+  .col-50 { flex: 0 0 50%; }
+  .col-48 { flex: 0 0 48%; }
+  .col-52 { flex: 0 0 52%; }
+  .col-46 { flex: 0 0 46%; }
+  h4 {
+    color: #7B2D8E;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  ul, ol {
+    padding-left: 16px;
+    margin-bottom: 4px;
+  }
+  li { margin-bottom: 2px; }
+  .takeaway {
+    background: #F3EDF6;
+    border: 1px solid #C9B6D3;
+    border-radius: 3px;
+    padding: 6px 10px;
+    font-size: 10.5px;
+    line-height: 1.35;
+    color: #1F2933;
+    margin-top: 4px;
+  }
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 10px;
+    color: #8898AA;
+    padding-top: 2px;
+  }
+  .formula-box {
+    background: #FAF8FB;
+    border-left: 2px solid #7B2D8E;
+    padding: 3px 6px;
+    margin: 3px 0;
+    font-size: 11px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+    margin: 4px 0;
+  }
+  th, td {
+    padding: 2.5px 4px;
+    text-align: left;
+  }
+  th {
+    border-top: 1.2px solid #1F2933;
+    border-bottom: 1px solid #1F2933;
+    font-weight: 600;
+  }
+  tr.bottom-border td {
+    border-bottom: 1.2px solid #1F2933;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+<div class='slide-container' id='slide1'>
+  <div>
+    <div class='header'>
+      <div class='title'>PINN design: architecture and inductive biases</div>
+      <div class='subtitle'>Module 4 &bull; two networks share one physics loss &bull; six design choices enforce SEIRD structure exactly</div>
+    </div>
+    <div class='content'>
+      <div class='col col-50'>
+        <h4>The observability problem</h4>
+        <ul>
+          <li>Surveillance reports only two series: cumulative cases <i>C</i> and deaths <i>D</i></li>
+          <li>Hidden compartments <i>S, E, I</i> are <b>never measured</b></li>
+          <li>Transmission &beta;(<i>t</i>) and mortality &mu; must be inferred from <i>C</i> and <i>D</i> alone</li>
+        </ul>
+        <h4>Observable re-parameterisation</h4>
+        <p style='font-size:11px;'>Set <i>C = I + R + D</i> (all symptomatic). Then <i>S = N &minus; E &minus; C</i> exactly, so total population conservation <i>S+E+I+R+D = N</i> holds identically for any network output.</p>
+        <h4>Dual-network architecture</h4>
+        <ul>
+          <li><b>State net</b> <i>g<sub>&theta;</sub>(&tau;)</i>: 3&times;48 tanh units, 4 positive outputs:
+            <div class='formula-box'>
+              <i>e = e<sub>0</sub> e<sup>&tau; g<sub>1</sub></sup>, &nbsp; i = i<sub>0</sub> e<sup>&tau; g<sub>2</sub></sup>, &nbsp; c = c<sub>0</sub> e<sup>&tau; g<sub>3</sub></sup>, &nbsp; d = d<sub>0</sub> + &tau; g<sub>4</sub></i>
+            </div>
+          </li>
+          <li><b>Transmission net</b> <i>h<sub>&phi;</sub>(&tau;)</i>: 3&times;32 tanh units:
+            <div class='formula-box'>
+              &beta;(&tau;) = Softplus(<i>h<sub>&phi;</sub>(&tau;) + b</i>) &gt; 0
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class='col col-48'>
+        <h4>Six inductive biases</h4>
+        <ol>
+          <li><b>Hard ICs:</b> Exponential factor <i>e<sub>0</sub>e<sup>&tau; g<sub>1</sub></sup></i> guarantees <i>e(0)=e<sub>0</sub></i> exactly; &tau; factor enforces zero IC gradient at &tau;=0.</li>
+          <li><b>Positivity:</b> Softplus and exp mappings strictly prevent negative populations.</li>
+          <li><b>CFR bounds:</b> &mu; = &gamma; CFR / (1&minus;CFR) with CFR &isin; (0.2, 0.8), eliminating the degenerate &mu; &rarr; 0 attractor.</li>
+          <li><b>Fourier features:</b> Inputs [sin(<i>k&pi;&tau;</i>), cos(<i>k&pi;&tau;</i>)] for <i>k=1..4</i> defeat neural spectral bias so rapid &beta;(<i>t</i>) shifts are captured.</li>
+          <li><b>Relative ODE residuals:</b> Each residual scaled by state magnitude so early small-scale dynamics are weighted equally with the peak.</li>
+          <li><b>Smooth prior on &beta;:</b> Penalty on (d&beta;/d&tau;)<sup>2</sup> renders the ill-posed inverse problem well-conditioned.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class='takeaway'>
+      <b>What the architecture guarantees without training:</b> Total population conservation <i>S+E+I+R+D = N</i> to machine precision (2&times;10<sup>&minus;16</sup>); positive states; exact initial conditions; biological CFR range [20%, 80%].
+    </div>
+    <div class='footer'>Module 4 &bull; Slide 1</div>
+  </div>
+</div>
+</body>
+</html>

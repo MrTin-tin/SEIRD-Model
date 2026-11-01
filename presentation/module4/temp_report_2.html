@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 794px;
+    height: 1123px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: 'Crimson Pro', 'Times New Roman', serif;
+    color: #111;
+    font-size: 13.5px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 794px;
+    height: 1123px;
+    background: #fff;
+    padding: 60px 65px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .page-num {
+    text-align: center;
+    font-size: 11px;
+    color: #555;
+  }
+  h1.title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13.5px;
+    color: #444;
+    margin-bottom: 8px;
+  }
+  .author {
+    text-align: center;
+    font-size: 12.5px;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 22px;
+  }
+  h2.section {
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    border-bottom: 0.5px solid #ccc;
+    padding-bottom: 2px;
+  }
+  h3.subsection {
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+  p {
+    text-align: justify;
+    margin-bottom: 8px;
+    text-indent: 1.5em;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  .formula {
+    text-align: center;
+    margin: 8px 0;
+    font-style: italic;
+  }
+  ol, ul {
+    padding-left: 28px;
+    margin-bottom: 8px;
+  }
+  li {
+    margin-bottom: 4px;
+    text-align: justify;
+  }
+  .remark {
+    background: #fbfbfb;
+    border-left: 3px solid #7B2D8E;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 12.5px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 12px 0 6px 0;
+  }
+  th, td {
+    padding: 4px 6px;
+    text-align: left;
+  }
+  th {
+    border-top: 1.5px solid #111;
+    border-bottom: 1px solid #111;
+    font-weight: 600;
+  }
+  tr.bottom-border td {
+    border-bottom: 1.5px solid #111;
+  }
+  .caption {
+    font-size: 11.5px;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  .cite {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    padding-left: 18px;
+    text-indent: -18px;
+  }
+</style>
+</head>
+<body>
+<div class="page" id="report_page_2">
+  <div>
+    <h2 class="section">3. Loss Function and Training Protocol</h2>
+    <h3 class="subsection">3.1 Composite Loss Formulation</h3>
+    <p class="no-indent">The multi-objective loss function balances data fidelity, differential dynamics, and functional regularity:</p>
+    <div class="formula">
+      L = L<sub>C</sub> + L<sub>D</sub> + L<sub>ode</sub> + w<sub>sm</sub> L<sub>smooth</sub>
+    </div>
+    <p class="no-indent">where empirical terms are computed over discrete surveillance dates &tau;<sub>k</sub>:</p>
+    <div class="formula">
+      L<sub>C</sub> = (1/n<sub>C</sub>) &Sigma; [c(&tau;<sub>k</sub>) &minus; C<sub>k</sub>/K]<sup>2</sup>, &emsp; L<sub>D</sub> = (1/n<sub>D</sub>) &Sigma; [d(&tau;<sub>k</sub>) &minus; D<sub>k</sub>/K]<sup>2</sup>
+    </div>
+    <p class="no-indent">The physics loss is evaluated over <i>N<sub>f</sub> = 200</i> interior collocation points using reverse-mode automatic differentiation:</p>
+    <div class="formula" style="font-size:12px;">
+      L<sub>ode</sub> = (1/N<sub>f</sub>) &Sigma; [ ((e' &minus; Tf<sub>e</sub>)/e)<sup>2</sup> + ((i' &minus; Tf<sub>i</sub>)/i)<sup>2</sup> + ((c' &minus; Tf<sub>c</sub>)/c)<sup>2</sup> + ((d' &minus; Tf<sub>d</sub>)/d)<sup>2</sup> ]
+    </div>
+    <div class="formula">
+      L<sub>smooth</sub> = (1/N<sub>f</sub>) &Sigma; (d&beta;/d&tau;)<sup>2</sup>
+    </div>
+    <p class="no-indent">Here <i>K</i> represents the normalization scale (peak cumulative cases in training). Hyperparameters are fixed at <i>w<sub>data</sub> = w<sub>ode</sub> = 1</i>, with smoothness weight <i>w<sub>sm</sub> = 10<sup>&minus;4</sup></i> for synthetic experiments and <i>10<sup>&minus;3</sup></i> for real outbreak data.</p>
+
+    <div class="remark">
+      <b>Remark on Relative vs. Absolute Residuals:</b> In epidemic outbreaks, caseloads expand across orders of magnitude. Under canonical absolute residuals <i>(x' &minus; Tf)<sup>2</sup></i>, the early phase where <i>(e, i, c)</i> are small contributes practically zero loss gradient. The network fits only the peak, resulting in massive early dynamical drift. Normalising by state magnitude yields scale-invariant loss contributions across the entire trajectory.
+    </div>
+
+    <h3 class="subsection">3.2 Two-Stage Optimization Protocol</h3>
+    <p class="no-indent">Optimization follows a disciplined two-stage sequence implemented entirely in IEEE float64 precision:</p>
+    <ol>
+      <li><b>Stage 1 &mdash; Stochastic Exploration (Adam):</b> Initial learning rate of 2&times;10<sup>&minus;3</sup> with cosine annealing over 2,000 iterations. Resampling interior collocation points each iteration injects stochastic noise that escapes flat plateaus and aligns coarse trajectory envelopes.</li>
+      <li><b>Stage 2 &mdash; Deterministic Refinement (L-BFGS):</b> Quasi-Newton optimization using a strong-Wolfe line search over 2,500&ndash;6,000 iterations evaluated on a fixed linspace grid. The second-order curvature approximation resolves stiff ODE couplings and converges to tight gradient tolerances.</li>
+    </ol>
+    <p class="no-indent">Point forecasts are constructed from an ensemble of 5 independent seeds. For out-of-sample forecasting, &beta; is held constant at its trailing 14-day mean, combined with the learned CFR parameter &mu;, and propagated via DOP853.</p>
+  </div>
+  <div class="page-num">2</div>
+</div>
+</body>
+</html>

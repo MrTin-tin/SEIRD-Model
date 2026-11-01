@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 960px;
+    height: 540px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: 'Crimson Pro', 'Latin Modern Roman', 'Times New Roman', serif;
+    color: #1F2933;
+    -webkit-font-smoothing: antialiased;
+  }
+  .slide-container {
+    width: 960px;
+    height: 540px;
+    background: #fff;
+    padding: 22px 32px 18px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header {
+    border-bottom: 1.5px solid #7B2D8E;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1F2933;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #5F6B7A;
+    margin-top: 2px;
+  }
+  .content {
+    flex: 1;
+    display: flex;
+    gap: 22px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .col { flex: 1; }
+  .col-50 { flex: 0 0 50%; }
+  .col-48 { flex: 0 0 48%; }
+  .col-52 { flex: 0 0 52%; }
+  .col-46 { flex: 0 0 46%; }
+  h4 {
+    color: #7B2D8E;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  ul, ol {
+    padding-left: 16px;
+    margin-bottom: 4px;
+  }
+  li { margin-bottom: 2px; }
+  .takeaway {
+    background: #F3EDF6;
+    border: 1px solid #C9B6D3;
+    border-radius: 3px;
+    padding: 6px 10px;
+    font-size: 10.5px;
+    line-height: 1.35;
+    color: #1F2933;
+    margin-top: 4px;
+  }
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 10px;
+    color: #8898AA;
+    padding-top: 2px;
+  }
+  .formula-box {
+    background: #FAF8FB;
+    border-left: 2px solid #7B2D8E;
+    padding: 3px 6px;
+    margin: 3px 0;
+    font-size: 11px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+    margin: 4px 0;
+  }
+  th, td {
+    padding: 2.5px 4px;
+    text-align: left;
+  }
+  th {
+    border-top: 1.2px solid #1F2933;
+    border-bottom: 1px solid #1F2933;
+    font-weight: 600;
+  }
+  tr.bottom-border td {
+    border-bottom: 1.2px solid #1F2933;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+<div class='slide-container' id='slide3'>
+  <div>
+    <div class='header'>
+      <div class='title'>Synthetic experiments: E2 forward, E3 inverse &beta;(t), E4 hidden states</div>
+      <div class='subtitle'>Module 4 &bull; no real data; ground truth is known; PINN is tested against DOP853</div>
+    </div>
+    <div class='content'>
+      <div class='col col-50'>
+        <img src='figs/fig_e2_forward_pinn.png' style='height:140px;'/>
+        <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E2: forward PINN (markers) vs. DOP853 (lines) and pointwise error</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Target Quantity</th>
+              <th>1% Noise</th>
+              <th>5% Noise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>&beta;(t) relative L<sub>2</sub></td><td>11.0% &plusmn; 0.7%</td><td>11.6% &plusmn; 0.6%</td></tr>
+            <tr><td>&mu; relative error</td><td>4.6% &plusmn; 0.3%</td><td>5.4% &plusmn; 1.0%</td></tr>
+            <tr><td>Hidden s(t)</td><td>0.36% &plusmn; 0.03%</td><td>0.46% &plusmn; 0.09%</td></tr>
+            <tr><td>Hidden e(t)</td><td>5.8% &plusmn; 0.6%</td><td>6.4% &plusmn; 0.7%</td></tr>
+            <tr class='bottom-border'><td>Hidden i(t)</td><td>5.8% &plusmn; 0.4%</td><td>6.5% &plusmn; 0.8%</td></tr>
+          </tbody>
+        </table>
+        <div style='font-size:9px; color:#5F6B7A;'>E3/E4: 5 seeds; step reduction &beta;: 0.55 &rarr; 0.25 at Day 30</div>
+      </div>
+      <div class='col col-48' style='display:flex; flex-direction:column; justify-content:space-between;'>
+        <div>
+          <img src='figs/fig_e3_inverse_beta.png' style='height:120px;'/>
+          <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E3: Recovered &beta;(t) (shaded band = seed range at 5% noise)</div>
+        </div>
+        <div>
+          <img src='figs/fig_e4_hidden_states.png' style='height:120px;'/>
+          <div style='font-size:9.5px; color:#5F6B7A; text-align:center;'>E4: Unobserved s(t), e(t), i(t) reconstructed from cases/deaths</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class='takeaway'>
+      <b>E2 Forward:</b> Worst-case compartment error &lt; 2.0&times;10<sup>&minus;3</sup>; mass conservation error 2&times;10<sup>&minus;16</sup>. 
+      <b>E3 Inverse:</b> Recovers non-smooth &beta;(t) within 11.6% under 5% noise. 
+      <b>E4 Hidden states:</b> Reconstructs susceptible curve to 0.46% with <i>zero direct measurements</i>.
+    </div>
+    <div class='footer'>Module 4 &bull; Slide 3</div>
+  </div>
+</div>
+</body>
+</html>
